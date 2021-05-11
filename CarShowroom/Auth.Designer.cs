@@ -76,6 +76,7 @@
             this.textBoxLogin.Name = "textBoxLogin";
             this.textBoxLogin.Size = new System.Drawing.Size(100, 20);
             this.textBoxLogin.TabIndex = 4;
+            this.textBoxLogin.Text = "BisteN";
             // 
             // textBoxPass
             // 
@@ -83,8 +84,9 @@
             this.textBoxPass.Name = "textBoxPass";
             this.textBoxPass.Size = new System.Drawing.Size(100, 20);
             this.textBoxPass.TabIndex = 5;
+            this.textBoxPass.Text = "Pass";
             // 
-            // Form1
+            // Auth
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -98,9 +100,10 @@
             this.MaximumSize = new System.Drawing.Size(200, 150);
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(200, 150);
-            this.Name = "Form1";
+            this.Name = "Auth";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Авторизация";
+            this.Load += new System.EventHandler(this.Auth_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

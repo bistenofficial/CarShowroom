@@ -78,5 +78,10 @@ namespace CarShowroom
                 conncet(sql, login);
             }
         }
+
+        private void Auth_Load(object sender, EventArgs e)
+        {
+            textBoxPass.PasswordChar = '*';
+        }
     }
 }

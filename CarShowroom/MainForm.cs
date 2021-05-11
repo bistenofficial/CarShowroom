@@ -24,8 +24,19 @@ namespace CarShowroom
         private void main_Load(object sender, EventArgs e)
         {
             label1.Text = login.ToString();
-            string sql = "SELECT * from employees where Login = '" + hashing(login)+"' ;";
+            string sql = "SELECT * from employees where Login = '" + hashing(login) + "' ;";
             conncet(sql);
+            roleID = int.Parse(dataGridView1.Rows[0].Cells[9].Value.ToString());
+            dataClear();
+            sql = "SELECT * from positions where idPositions = '" + roleID + "' ;";
+            conncet(sql);
+            label1.Text += " Ваша должность - " + dataGridView1.Rows[0].Cells[1].Value.ToString();
+            dataClear();
+        }
+        private void dataClear()
+        {
+            dataGridView1.DataSource = null;
+            dataGridView1.Rows.Clear();
         }
         private void conncet(string sql)
         {
@@ -37,8 +48,7 @@ namespace CarShowroom
                 MySqlDataAdapter adapter = new MySqlDataAdapter(sql, connection);//создание объекта,который принимает объект подключения (наша база) и sql-выражение SELECT.
                 DataSet ds = new DataSet();//создания объекта для хранения копии нашей БД
                 adapter.Fill(ds);//заполнение
-                                 //dataGridView1.DataSource = ds.Tables[0];//заполнение DataGrid данными из нашей БД
-
+                dataGridView1.DataSource = ds.Tables[0];//заполнение DataGrid данными из нашей БД
                 connection.Close();//закрытие соединения
 
             }
