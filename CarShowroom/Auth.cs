@@ -19,7 +19,7 @@ namespace CarShowroom
             InitializeComponent();
         }
 
-        private void conncet(string sql, string login)
+        private DataSet conncet(string sql)
         {
             string str = "server=localhost;user=root;password=ИшыеуТ;database=car_showroom;port=3306";//строка подключения к БД
             MySqlConnection connection = new MySqlConnection(str);//создание подключения
@@ -30,27 +30,18 @@ namespace CarShowroom
                 DataSet ds = new DataSet();//создания объекта для хранения копии нашей БД
                 adapter.Fill(ds);//заполнение
                 //dataGridView1.DataSource = ds.Tables[0];//заполнение DataGrid данными из нашей БД
-                if (ds.Tables[0].Rows.Count == 1)
-                {
-                    this.Hide();
-                    MessageBox.Show("Вы авторизовались как " + login, "Успешно");
-                    Form ifrm = new MainForm(login);
-                    ifrm.Show();
-                }
-                else
-                {
-                    MessageBox.Show("Логин или пароль не правильный", "Ошибка");
-                }
                 connection.Close();//закрытие соединения
-
+                return ds;
             }
             catch (IndexOutOfRangeException)//Нужно при Update,del,insert
             {
                 MessageBox.Show("Запрос выполнен");
+                return null;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
+                return null;
             }
 
         }
@@ -65,6 +56,7 @@ namespace CarShowroom
         }
         private void buttonAuth_Click(object sender, EventArgs e)
         {
+            DataSet ds = new DataSet();
             string sql;
             string login = textBoxLogin.Text.ToString();
             string pass = textBoxPass.Text.ToString();
@@ -75,10 +67,45 @@ namespace CarShowroom
             else
             {
                 sql = "SELECT * from employees where Login = '" + hashing(login) + "' and Pass = '" + hashing(pass) + "' ;";
-                conncet(sql, login);
+                ds = conncet(sql);
+                if (ds.Tables[0].Rows.Count == 1)
+                {
+                    sql = "SELECT PositionsID from employees where Login = '" + hashing(login) + "' ;";
+                    ds = conncet(sql);
+                    int roleID = int.Parse(ds.Tables[0].Rows[0][0].ToString());
+                    sql = "SELECT Job_title from positions where idPositions = '" + roleID + "' ;";
+                    ds = conncet(sql);
+                    string dolzhnost = ds.Tables[0].Rows[0][0].ToString();
+                    if (dolzhnost == "Директор")
+                    {
+                        this.Hide();
+                        MessageBox.Show("Вы авторизовались как " + login, "Успешно");
+                        Form ifrm = new Admin(login,dolzhnost);
+                        ifrm.Show();
+                    }
+                    else if (dolzhnost == "Сервисный инженер" || dolzhnost == "Автомаляр" || dolzhnost == "Автомеханик" || dolzhnost == "Автослесарь" || dolzhnost == "Автоэлектрик" || dolzhnost == "Шиномонтажник" || dolzhnost == "Мастер приемщик" || dolzhnost == "Работники автомойки" || dolzhnost == "Автодиагност")
+                    {
+                        this.Hide();
+                        MessageBox.Show("Вы авторизовались как " + login, "Успешно");
+                        Form ifrm = new Master(login,dolzhnost);
+                        ifrm.Show();
+                    }
+                    else if (dolzhnost == "Менеджер") 
+                    {
+                        this.Hide();
+                        MessageBox.Show("Вы авторизовались как " + login, "Успешно");
+                        Form ifrm = new Manager(login,dolzhnost);
+                        ifrm.Show();
+                    }
+
+                }
+                else
+                {
+                    MessageBox.Show("Логин или пароль не правильный", "Ошибка");
+                }
+
             }
         }
-
         private void Auth_Load(object sender, EventArgs e)
         {
             textBoxPass.PasswordChar = '*';
