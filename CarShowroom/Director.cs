@@ -12,9 +12,9 @@ using System.Security.Cryptography;
 
 namespace CarShowroom
 {
-    public partial class Admin : Form
+    public partial class Director : Form
     {
-        public Admin(string login, string dolznost)
+        public Director(string login, string dolznost)
         {
             InitializeComponent();
             this.login = login;
@@ -22,7 +22,10 @@ namespace CarShowroom
         }
         string login;
         string dolznost;
-
+        private void HideAll()
+        {
+            panelIdEmployees.Visible = false;
+        }
         private void dataClear()
         {
             dataGridView1.DataSource = null;
@@ -31,7 +34,7 @@ namespace CarShowroom
         private DataSet conncet(string sql)
         {
             DataSet ds = new DataSet();
-            string str = "server=localhost;user=root;password=ИшыеуТ;database=car_showroom;port=3306";//строка подключения к БД
+            string str = "server=localhost;user=root;password=ИшыеуТ;database=car_showroom_2;port=3306";//строка подключения к БД
             MySqlConnection connection = new MySqlConnection(str);//создание подключения
             try
             {
@@ -52,21 +55,34 @@ namespace CarShowroom
             }
             return ds;
         }
-        private string hashing(string source)
-        {
-            SHA256 sha256Hash = SHA256.Create();
-            //From String to byte array
-            byte[] sourceBytes = Encoding.UTF8.GetBytes(source);
-            byte[] hashBytes = sha256Hash.ComputeHash(sourceBytes);
-            string hash = BitConverter.ToString(hashBytes).Replace("-", String.Empty);
-            return hash;
-        }
 
         private void Admin_Load(object sender, EventArgs e)
         {
             _ = new DataSet();
             label2.Text = "Вы авторизованы под логином " + login.ToString();
             label2.Text += " Ваша должность - " + dolznost;
+
+        }
+
+        private void iDToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            HideAll();
+            panelIdEmployees.Visible = true;
+        }
+
+        private void buttonIdEmpoyees_Click(object sender, EventArgs e)
+        {
+            DataSet ds = new DataSet();
+            string sql;
+
+            sql = "SELECT * from employees where idEmployees = '" + Int32.Parse(textBoxIdEmployees.Text) + "' ;";//Запрос на получения данных по логину и паролю
+            ds = conncet(sql);
+            dataGridView2.DataSource = ds.Tables[0];
+        }
+
+        private void фамилииToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 }

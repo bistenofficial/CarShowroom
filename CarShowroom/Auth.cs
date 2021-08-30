@@ -21,7 +21,7 @@ namespace CarShowroom
 
         private DataSet conncet(string sql)
         {
-            string str = "server=localhost;user=root;password=ИшыеуТ;database=car_showroom;port=3306";//строка подключения к БД
+            string str = "server=localhost;user=root;password=ИшыеуТ;database=car_showroom_2;port=3306";//строка подключения к БД
             MySqlConnection connection = new MySqlConnection(str);//создание подключения
             try
             {
@@ -66,28 +66,28 @@ namespace CarShowroom
             }
             else
             {
-                sql = "SELECT * from employees where Login = '" + hashing(login) + "' and Pass = '" + hashing(pass) + "' ;";
+                sql = "SELECT * from employees where Login = '" + hashing(login) + "' and Password = '" + hashing(pass) + "' ;";//Запрос на получения данных по логину и паролю
                 ds = conncet(sql);
-                if (ds.Tables[0].Rows.Count == 1)
+                if (ds.Tables[0].Rows.Count == 1)//Проверка были ли получены значения
                 {
                     sql = "SELECT PositionsID from employees where Login = '" + hashing(login) + "' ;";
                     ds = conncet(sql);
-                    int roleID = int.Parse(ds.Tables[0].Rows[0][0].ToString());
+                    int roleID = int.Parse(ds.Tables[0].Rows[0][0].ToString());//Получение id должности
                     sql = "SELECT Job_title from positions where idPositions = '" + roleID + "' ;";
                     ds = conncet(sql);
-                    string dolzhnost = ds.Tables[0].Rows[0][0].ToString();
+                    string dolzhnost = ds.Tables[0].Rows[0][0].ToString();//Получение названия должности
                     if (dolzhnost == "Директор")
                     {
                         this.Hide();
                         MessageBox.Show("Вы авторизовались как " + login, "Успешно");
-                        Form ifrm = new Admin(login,dolzhnost);
+                        Form ifrm = new Director(login,dolzhnost);
                         ifrm.Show();
                     }
                     else if (dolzhnost == "Сервисный инженер" || dolzhnost == "Автомаляр" || dolzhnost == "Автомеханик" || dolzhnost == "Автослесарь" || dolzhnost == "Автоэлектрик" || dolzhnost == "Шиномонтажник" || dolzhnost == "Мастер приемщик" || dolzhnost == "Работники автомойки" || dolzhnost == "Автодиагност")
                     {
                         this.Hide();
                         MessageBox.Show("Вы авторизовались как " + login, "Успешно");
-                        Form ifrm = new Master(login,dolzhnost);
+                        Form ifrm = new Accountant(login,dolzhnost);
                         ifrm.Show();
                     }
                     else if (dolzhnost == "Менеджер") 
